@@ -21,8 +21,7 @@ st.set_page_config(page_title="News Article Summarizer & Reel Generator", page_i
 # Download the 'punkt' tokenizer model if not already present.
 try:
     nltk.data.find('tokenizers/punkt')
-except LookupError:  # Corrected: Use LookupError instead
-    st.info("NLTK 'punkt' tokenizer not found. Downloading...")
+except LookupError:  # <-- Change to this
     nltk.download('punkt')
 
 # --- Hugging Face Model Setup ---
