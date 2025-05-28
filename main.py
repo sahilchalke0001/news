@@ -75,6 +75,9 @@ if 'trans_hindi' not in st.session_state:
     st.session_state.trans_hindi = ""
 if 'trans_marathi' not in st.session_state:
     st.session_state.trans_marathi = ""
+if 'article_image' not in st.session_state:
+    st.session_state.article_image = None
+
 
 # URL input and processing
 url = st.text_input("Enter News Article URL:")
@@ -92,6 +95,22 @@ if st.button("Process Article"):
                     # Display article metadata
                     st.subheader("Original Content")
                     st.write(f"**Title:** {article.title}")
+                    
+                    # --- Display Image ---
+                    if article.top_image:
+                        st.session_state.article_image = article.top_image
+                        # CORRECTED LINE: using use_container_width instead of use_column_width
+                        st.image(st.session_state.article_image, caption=article.title, use_container_width=True)
+                    elif article.images:
+                        # Fallback to the first image if top_image is not found
+                        first_image = list(article.images)[0]
+                        st.session_state.article_image = first_image
+                        # CORRECTED LINE: using use_container_width instead of use_column_width
+                        st.image(st.session_state.article_image, caption=article.title, use_container_width=True)
+                    else:
+                        st.session_state.article_image = None
+                        st.info("No main image found for this article.")
+
                     st.write(f"**Published:** {article.publish_date or 'N/A'}")
                     st.write(f"**Authors:** {', '.join(article.authors) or 'N/A'}")
                     
@@ -123,6 +142,7 @@ if st.button("Process Article"):
                             st.info(st.session_state.trans_marathi)
             except Exception as e:
                 st.error(f"Processing error: {e}")
+                st.session_state.article_image = None # Clear image on error
     else:
         st.warning("Please enter a valid URL")
 
